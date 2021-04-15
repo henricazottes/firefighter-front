@@ -5,13 +5,15 @@ import 'react-calendar/dist/Calendar.css';
 import './App.css';
 import images from './unsplash_images.json';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 async function getFirefighter(date) {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', 'Access-Control-Allow-Origin': true },
     body: date && `datestring=${date}`
   };
-  return fetch('http://localhost:8080/firefighter/new', requestOptions)
+  return fetch(`${apiUrl}/firefighter/new`, requestOptions)
     .then(response => response.json())
 }
 
@@ -21,7 +23,7 @@ async function skipFirefighter(e) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': true }
   };
-  return fetch('http://localhost:8080/firefighter/skip', requestOptions);
+  return fetch(`${apiUrl}/firefighter/skip`, requestOptions);
 }
 
 function getImage(setImageUrl, firefighter) {
