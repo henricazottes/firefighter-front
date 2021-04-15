@@ -1,22 +1,69 @@
-import logo from './logo.svg';
+import { useState, useEffect } from 'react';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+
 import './App.css';
+import images from './unsplash_images.json';
+
+async function getFirefighter(date) {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', 'Access-Control-Allow-Origin': true },
+    body: date && `datestring=${date}`
+  };
+  return fetch('http://localhost:8080/firefighter/new', requestOptions)
+    .then(response => response.json())
+}
+
+async function skipFirefighter(e) {
+  e.preventDefault();
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': true }
+  };
+  return fetch('http://localhost:8080/firefighter/skip', requestOptions);
+}
+
+function getImage(setImageUrl, firefighter) {
+  setImageUrl(images[firefighter?.id]?.urls.small);
+}
 
 function App() {
+  const [imageUrl, setImageUrl] = useState();
+  const [firefighter, setFirefighter] = useState();
+  const [date, setDate] = useState(new Date());
+
+  useEffect(() => {
+    getFirefighter()
+      .then(fireFighter => setFirefighter(fireFighter));
+  }, []);
+
+  useEffect(() => {
+    getImage(setImageUrl, firefighter)
+  }, [firefighter]);
+
+  useEffect(() => {
+    const datestring = date.toLocaleString('sv', { timeZoneName: 'short' }).split(' ')[0];
+    getFirefighter(datestring)
+      .then(ff => setFirefighter(ff));
+  }, [date])
+
+
+  const datePhrase = (date.toDateString() === (new Date()).toDateString()) ? `d'aujourd'hui` : `du ${date.toLocaleDateString('fr-FR')}`
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={imageUrl} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Le pompier {datePhrase} est <b>{firefighter?.name}</b>.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p><a className="App-link" href="" onClick={e => skipFirefighter(e).then(() => getFirefighter()).then(setFirefighter)}>Décaller ↪</a></p>
+        <Calendar
+          className={"calendar"}
+          onChange={setDate}
+          value={date}
+        />
       </header>
     </div>
   );
