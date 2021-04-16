@@ -60,7 +60,7 @@ function App() {
         <p>
           Le pompier {datePhrase} est <b>{firefighter?.name}</b>.
         </p>
-        <p><button className="App-link" onClick={e => skipFirefighter(e).then(() => getFirefighter()).then(setFirefighter)}>Décaller ↪</button></p>
+        <p><button className="App-link" onClick={e => skipFirefighter(e).then(() => getFirefighter()).then(setFirefighter)}>Décaler ↪</button></p>
         <Calendar
           className={"calendar"}
           onChange={setDate}
