@@ -36,8 +36,8 @@ function App() {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
-    getFirefighter()
-      .then(fireFighter => setFirefighter(fireFighter));
+    setDate(new Date());
+
   }, []);
 
   useEffect(() => {
